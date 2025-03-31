@@ -107,6 +107,12 @@ class Feed < ApplicationRecord
     # Sort the entries by publication date in descending order
     all_entries.sort_by { |entry| entry[:published] || Time.zone.now }.reverse
   end
+
+private
+
+  def feed_params
+     params.require(:feed).permit(:title, :url)
+   end
 end
 
 ```
