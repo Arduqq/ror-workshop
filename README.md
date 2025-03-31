@@ -61,71 +61,98 @@ bundle install
 
 ---
 
-## Step 4: Create the Feeds Controller Actions
+## Step 4: Create a Feed Model
 
-Next, we will define the actions in our `FeedsController` to add, view, and show RSS feeds.
+Here you will make clear what the functionality and structure of a feed is. A feed has a title and a url, as well as its overall entries. In general, you will want to have a feed fetch all of its entries, as well as show the entirety of your feed (your global feed).
+
+Edit the `app/models/feed.rb` file:
+
+```ruby
+class Feed < ApplicationRecord
+  # Associations
+  has_many :entries, dependent: :destroy  # Each feed can have many entries
+
+  # Validations
+  validates :title, presence: true         # Ensure the feed has a title
+  validates :url, presence: true, uniqueness: true  # Ensure the feed URL is unique and present
+
+  # Fetch feed entries for a specific feed URL
+  def self.fetch_feed_entries(url)
+    response = HTTParty.get(url)
+    parsed_feed = Feedjira.parse(response.body)
+
+    # Map parsed entries into a standardized format
+    parsed_feed.entries.map do |entry|
+      {
+        title: entry.title,
+        url: entry.url,
+        summary: entry.summary,
+        published: entry.published || Time.zone.now
+      }
+    end
+  rescue => e
+    Rails.logger.error "Failed to fetch feed from #{url}: #{e.message}"
+    []  # Return an empty array if fetching the feed fails
+  end
+
+  # Fetch feed entries for all saved feeds
+  def self.fetch_feed_entries_global
+    all_entries = []
+
+    Feed.all.each do |feed|
+      entries = fetch_feed_entries(feed.url)
+      all_entries.concat(entries) if entries
+    end
+
+    # Sort the entries by publication date in descending order
+    all_entries.sort_by { |entry| entry[:published] || Time.zone.now }.reverse
+  end
+end
+
+```
+
+## Step 5: Create the Feeds Controller Actions
+
+Next, we will define the actions in our `FeedsController` to add, view, and show RSS feeds. It's where we define what happens when we ask the server to do things for us.
 
 Edit the `app/controllers/feeds_controller.rb` file:
 
 ```ruby
 class FeedsController < ApplicationController
-  require 'feedjira'  # Used to parse the RSS feed
-  require 'httparty'   # Used to fetch feed data via HTTP
-  
-  # Fetch all feeds from the database to display on the index page
   def index
     @feeds = Feed.all
+    @entries = Feed.fetch_feed_entries_global  # Call the method from the Feed model
   end
 
-  # Display a form for adding a new feed
   def new
     @feed = Feed.new
   end
 
-  # Create a new feed from the form data and save it to the database
   def create
     @feed = Feed.new(feed_params)
-    
-    if @feed.save  # If the feed is saved successfully
-      redirect_to feeds_path, notice: "Feed added successfully!"  # Redirect to the feed list
-    else  # If the feed save fails (validation issues, etc.)
-      render :new  # Render the 'new' form again for corrections
-    end
-  end
-
-  # Display a specific feed and its entries
-  def show
-    @feed = Feed.find_by(id: params[:id])  # Find the feed by its ID
-    if @feed.nil?  # If the feed is not found
-      redirect_to feeds_path, alert: "Feed not found."  # Redirect to the feed list
+    if @feed.save
+      redirect_to feeds_path, notice: "Feed added successfully!"
     else
-      # Fetch the entries from the feed URL
-      @entries = fetch_feed_entries(@feed.url)
+      render :new
     end
   end
 
-  private
-
-  # Strong parameters for creating or updating a feed
-  def feed_params
-    params.require(:feed).permit(:title, :url)
+  def show
+    @feed = Feed.find_by(id: params[:id])
+    if @feed.nil?
+      redirect_to feeds_path, alert: "Feed not found."
+    else
+      @entries = Feed.fetch_feed_entries(@feed.url)  # Call the method from the Feed model
+    end
   end
 
-  # Fetch and parse the feed entries from the provided URL
-  def fetch_feed_entries(url)
-    response = HTTParty.get(url)  # Fetch the content of the RSS feed
-    feed = Feedjira.parse(response.body)  # Parse the fetched content with Feedjira
-    
-    # Map each entry to a simplified hash containing essential details
-    feed.entries.map do |entry|
-      { 
-        title: entry.title,  # Title of the entry
-        url: entry.url,      # URL of the entry
-        summary: entry.summary  # Summary of the entry
-      }
-    end
+  def destroy
+    @feed = Feed.find(params[:id])
+    @feed.destroy
+    redirect_to feeds_path, notice: "Feed was successfully deleted."
   end
 end
+
 ```
 
 ### Explanation:
@@ -137,9 +164,9 @@ end
 
 ---
 
-## Step 5: Create the Views
+## Step 6: Create the Views
 
-Now, let’s create the views to display the feeds and their entries.
+Now, let’s create the views to display the feeds and their entries. This is the place where you structure all that data that you request from your server. 
 
 ### `app/views/feeds/index.html.erb`
 
