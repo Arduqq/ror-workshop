@@ -1,0 +1,27 @@
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .btn-primary {
+    background: #007BFF;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background: #0056b3;
+  }
+  
+  .btn-danger {
+    background: #DC3545;
+    color: white;
+  }
+  
+  .btn-danger:hover {
+    background: #a71d2a;
+  }
+  

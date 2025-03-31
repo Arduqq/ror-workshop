@@ -1,0 +1,23 @@
+<div class="container">
+    <h1><%= @feed&.title || "Feed Not Found" %></h1>
+
+    <%= link_to 'Back to Feeds', feeds_path, class: "btn btn-primary" %>
+    <% if @entries.present? %>
+        <div class="feed">
+        <% @entries.each do |entry| %>
+            <div class="feed-entry card">
+            <h2><a href="<%= entry[:url] %>"><%= entry[:title] %></a></h2>
+            <% if entry[:image].present? %>
+                <img src="<%= entry[:image] %>" alt="Feed Image" style="max-width: 200px; height: auto;">
+            <% end %>
+            <p><%= raw(entry[:summary]) %></p>
+            <small><%= entry[:published] %></small>
+            </div>
+        <% end %>
+        </div>
+    <% else %>
+        <p>No entries found.</p>
+    <% end %>
+
+    <%= link_to 'Delete', feed_path(@feed), data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, class: "btn btn-danger" %>
+</div>

@@ -1,0 +1,30 @@
+<div class="container">
+  <h1>RSS Feeds</h1>
+
+  <h2>Your Feeds</h2>
+    <%= link_to 'Add Feed', new_feed_path, class: "btn btn-primary" %>
+  <div class="feeds-list">
+    <% @feeds.each do |feed| %>
+      <div class="feed-item pill">
+        <h2><%= link_to feed.title, feed_path(feed) %></h2>
+      </div>
+    <% end %>
+
+  </div>
+</div>
+
+  <h2>Global Feed</h2>
+  <% if @entries.any? %>
+    <div class="feed">
+      <% @entries.each do |entry| %>
+        <div class="feed-entry card">
+          <h3><a href="<%= entry[:url] %>" target="_blank"><%= entry[:title] %></a></h3>
+          <p><%= entry[:summary] %></p>
+          <small>Published: <%= entry[:published].strftime('%B %d, %Y %H:%M') %></small>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p>No posts available.</p>
+  <% end %>
+

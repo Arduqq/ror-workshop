@@ -1,0 +1,18 @@
+.container {
+    width: 90%;
+    max-width: 700px;
+    margin: 20px auto;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .navbar {
+    background: #444;
+    color: white;
+    padding: 10px;
+    text-align: center;
+  }
+  

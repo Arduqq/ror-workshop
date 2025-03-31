@@ -1,0 +1,18 @@
+<div class="container">
+  <h1>Add a New Feed</h1>
+  <div class="card">
+    <%= form_with model: (@feed || Feed.new), local: true do |f| %>
+      <p>
+        <%= f.label :title %><br>
+        <%= f.text_field :title, class: "form-input" %>
+      </p>
+      <p>
+        <%= f.label :url %><br>
+        <%= f.text_field :url, class: "form-input" %>
+      </p>
+      <p>
+        <%= f.submit "Save", class: "btn btn-primary" %>
+      </p>
+    <% end %>
+  </div>
+</div>

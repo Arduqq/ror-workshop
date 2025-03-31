@@ -1,0 +1,17 @@
+.pill {
+    border-radius: 50px;
+    background: white;
+    border: 1px solid black;
+    font-size: .5rem;
+    padding: 10px;
+}
+
+
+.pill a {
+    color: #0d00ff;
+    text-decoration: none;
+  }
+  
+.pill a:hover {
+    text-decoration: underline;
+  }

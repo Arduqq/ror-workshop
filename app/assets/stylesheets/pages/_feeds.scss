@@ -1,0 +1,32 @@
+.feed {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .feed-entry {
+    background: white;
+    padding: 15px;
+    border: 1px solid black;
+    flex: 0 0 100%;
+  }
+  
+  .feed-entry h2 {
+    font-size: 1.3rem;
+  }
+  
+  .feed-entry a {
+    color: #0d00ff;
+    text-decoration: none;
+  }
+  
+  .feed-entry a:hover {
+    text-decoration: underline;
+  }
+  
+  .feeds-list {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 10px;
+  }

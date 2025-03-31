@@ -1,0 +1,12 @@
+// Base styles
+@import "base/reset";
+@import "base/typography";
+@import "base/layout";
+
+// Components
+@import "components/buttons";
+@import "components/cards";
+
+// Page-specific styles
+@import "pages/home";
+@import "pages/feeds";

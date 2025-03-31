@@ -1,0 +1,27 @@
+.feeds-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .feed-item {
+    background: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .feed-item h2 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+  }
+  
+  .feed-item a {
+    color: #007BFF;
+    text-decoration: none;
+  }
+  
+  .feed-item a:hover {
+    text-decoration: underline;
+  }
+  
